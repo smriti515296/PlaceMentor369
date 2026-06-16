@@ -117,36 +117,29 @@ function renderJobList() {
   const studentCGPA = studentSession.cgpa || 0;
   const studentBranch = studentSession.branch || "";
 
-  list.innerHTML = allAvailableJobs
-    .map(job => {
-      // ✅ Eligibility logic fixed
-      const isEligible =
-        studentCGPA >= (job.cgpa || 0) &&
-        (!job.branches || job.branches.length === 0 || job.branches.includes(studentBranch));
+  list.innerHTML = allAvailableJobs.map(job => {
 
-      const isApplied = appliedJobs.includes(job.id);
+    const isEligible =
+      studentCGPA >= (job.cgpa || 0) &&
+      (job.branch.length === 0 || job.branch.includes(studentBranch));
 
-      return `
-        <div onclick="selectJob('${job.id}')"
-             id="card-${job.id}"
-             class="job-card bg-white p-5 rounded-xl border border-slate-200 cursor-pointer hover:shadow-md transition-all mb-3">
-            <div class="flex justify-between items-start mb-2">
-                <h3 class="font-bold text-slate-900">${job.title}</h3>
-                <span class="px-2 py-1 text-[10px] font-bold rounded ${
-                  isEligible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
-                }">
-                    ${isEligible ? "ELIGIBLE" : "INELIGIBLE"}
-                </span>
-            </div>
-            <p class="text-sm text-slate-500">${job.company}</p>
-            <div class="flex justify-between items-center mt-3">
-                <p class="text-[10px] text-slate-400 uppercase font-medium">Deadline: ${job.deadline}</p>
-                <p class="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">REQ: ${job.cgpa}</p>
-            </div>
-        </div>
-      `;
-    })
-    .join("");
+    const isApplied = appliedJobs.includes(job.id);
+
+    return `
+      <div class="job-card">
+        <h3>${job.title}</h3>
+        <p>${job.company}</p>
+
+        <span>
+          ${isEligible ? "Eligible" : "Not Eligible"}
+        </span>
+
+        <span>
+          ${isApplied ? "Applied" : "Not Applied"}
+        </span>
+      </div>
+    `;
+  }).join("");
 }
 
 /* ==========================================================
